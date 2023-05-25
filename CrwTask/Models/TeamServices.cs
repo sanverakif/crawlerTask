@@ -6,7 +6,7 @@ using System.Configuration;
 using System.Data.SqlClient;
 namespace CrwTask.Models
 {
-    public class TeamServices : ITeamsService
+    public class TeamServices
     {
 
         private readonly string cs = ConfigurationManager.ConnectionStrings ["taskDB"].ConnectionString;
@@ -23,9 +23,9 @@ namespace CrwTask.Models
 
                     while (dr.Read()) {
                         Teams t = new Teams();
-                        t.ID = Convert.ToInt32(dr["ID"]);
-                        t.Name = dr["Name"].ToString();
-                        t.Logo = dr["Logo"].ToString();
+                        t.ID = Convert.ToInt32(dr ["ID"]);
+                        t.Name = dr ["Name"].ToString();
+                        t.Logo = dr ["Logo"].ToString();
                         teams.Add(t);
                     }
                 }
@@ -39,5 +39,8 @@ namespace CrwTask.Models
     public interface ITeamsService
     {
         List<Teams> GetTeams();
+        void AddTeams(Teams item);
+        void Delete(Teams item);
+        void Update(Teams item);
     }
 }

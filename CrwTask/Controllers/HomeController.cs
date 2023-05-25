@@ -11,32 +11,50 @@ namespace CrwTask.Controllers
 {
     public class HomeController : Controller
     {
-        public readonly ITeamsService _teamsService;
-        public HomeController(ITeamsService teamsService)
-        {
-            _teamsService = teamsService;
-        }
-        [HttpGet]
+        TeamServices teamService = new TeamServices();
+        public SqlConnection con;
+
         public ActionResult Index()
         {
-            AllModels mo = new AllModels();
-            mo.Teams = _teamsService.GetTeams().ToList();
-            return View(mo);     
+            return View(teamService.GetTeams());
         }
-
-
-        public ActionResult About()
+        [HttpPost]
+        public ActionResult VeriAl(Teams obj)
         {
-            ViewBag.Message = "Your application description page.";
-
+            connection();
+            SqlCommand com = new SqlCommand("Select * from Teams", con);
+            com.Parameters.AddWithValue("@ID", obj.ID);
+            com.Parameters.AddWithValue("@Name", obj.Name);
+            com.Parameters.AddWithValue("@Logo", obj.Logo);
+            con.Open();
+            com.ExecuteNonQuery();
+            con.Close();
             return View();
         }
-
-        public ActionResult Contact()
+        //[HttpPost]
+        //public JsonResult JsonPost(Teams employeeData)
+        //{
+        //    Teams teams = new Teams
+        //    {
+        //        ID = employeeData.ID,
+        //        Name = employeeData.Name,
+        //        Logo = employeeData.Logo
+        //    };
+        //    return Json(teams, JsonRequestBehavior.AllowGet);
+        //}
+        public ActionResult IndexDetails(int id)
         {
-            ViewBag.Message = "Your contact page.";
-
-            return View();
+            var a = teamService.GetTeams();
+            var b = a.Where(x => x.ID == id).FirstOrDefault();
+            return View(b);
         }
+
+        private void connection()
+        {
+            string constr = ConfigurationManager.ConnectionStrings ["taskDB"].ConnectionString;
+            con = new SqlConnection(constr);
+        }
+
+       
     }
 }
