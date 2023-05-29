@@ -1,4 +1,5 @@
 ﻿using CrwTask.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -11,50 +12,43 @@ namespace CrwTask.Controllers
 {
     public class HomeController : Controller
     {
-        TeamServices teamService = new TeamServices();
+        TeamServices TeamService = new TeamServices();
         public SqlConnection con;
 
         public ActionResult Index()
         {
-            return View(teamService.GetTeams());
+            return View(TeamService.GetTeams());
+        }
+        public ActionResult TeamDetails(int id)
+        {
+            var a = TeamService.GetTeams();
+            var b = a.Where(x => x.ID == id).FirstOrDefault();
+            return View(b);
         }
         [HttpPost]
-        public ActionResult VeriAl(Teams obj)
+        public ActionResult AddTeam(Teams obj)
         {
-            connection();
-            SqlCommand com = new SqlCommand("Select * from Teams", con);
-            com.Parameters.AddWithValue("@ID", obj.ID);
-            com.Parameters.AddWithValue("@Name", obj.Name);
-            com.Parameters.AddWithValue("@Logo", obj.Logo);
+            Connection();
+            SqlCommand com = new SqlCommand($"Insert INTO Teams (Name,Logo) VALUES ('{obj.Name}', '{obj.Logo}')", con);
             con.Open();
             com.ExecuteNonQuery();
             con.Close();
             return View();
         }
-        //[HttpPost]
-        //public JsonResult JsonPost(Teams employeeData)
-        //{
-        //    Teams teams = new Teams
-        //    {
-        //        ID = employeeData.ID,
-        //        Name = employeeData.Name,
-        //        Logo = employeeData.Logo
-        //    };
-        //    return Json(teams, JsonRequestBehavior.AllowGet);
-        //}
+  
         public ActionResult IndexDetails(int id)
         {
-            var a = teamService.GetTeams();
+            var a = TeamService.GetTeams();
             var b = a.Where(x => x.ID == id).FirstOrDefault();
             return View(b);
         }
 
-        private void connection()
+        private void Connection()
         {
             string constr = ConfigurationManager.ConnectionStrings ["taskDB"].ConnectionString;
             con = new SqlConnection(constr);
         }
 
-       
+
     }
 }

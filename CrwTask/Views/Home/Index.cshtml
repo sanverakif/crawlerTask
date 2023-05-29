@@ -18,7 +18,7 @@
                 <td scope="row">@item.ID</td>
                 @*            <td>@Url.Action("VeriAl", "Home", new { id = item.ID })</td>*@
                 <td>
-                    @Html.ActionLink("Details", "IndexDetails", new { id = item.ID })
+                    @Html.ActionLink("Details", "TeamDetails", new { id = item.ID })
                 </td>
                 <td>@item.Name</td>
                 <td><img src="@item.Logo" /></td>
@@ -28,21 +28,19 @@
 </table>
 
 <div>
-    <input type="text" id="teamID" />
-    <input type="text" id="teamName" />
-    <input type="text" id="teamLogo" />
+  Team Name:  <input type="text" id="teamName" />
+  Team Logo:  <input type="text" id="teamLogo" />
     <input type="submit" id="btnPost" value="Save" />
 </div>
 
 <script>
         $(document).ready(function () {
-            $("#ekle").click(function () {
+            $("#btnPost").click(function () {
                 $.ajax(
                     {
                         type: "POST",
-                        url: "Home/VeriAl",
+                        url: "/Home/AddTeam",
                         data: {
-                            ID: $("#teamID").val(),
                             Name: $("#teamName").val(),
                             Logo: $("#teamLogo").val()
                         }
@@ -53,35 +51,3 @@
         });
 
     </script>
-
-@*<script>
-        $(function () {
-            $("#btnPost").click(function () {
-                var team = {};
-                team.ID = $('#teamID').val();
-                team.Name = $('#teamName').val();
-                team.Logo = $('#teamLogo').val();
-                if (team != null) {
-                    $.ajax({
-                        type: "POST",
-                        url: "/Home/JsonPost",
-                        data: JSON.stringify(team),
-                        success: function (res) {
-                            if (res != null) {
-                                console.log(team);
-                            } else {
-                                alert("boş");
-                            }
-                        },
-                        failure: function (response) {
-                            alert(response.responseText);
-                        },
-                        error: function (response) {
-                            alert(response.responseText);
-                        }
-                    });
-                }
-            });
-        });
-    </script>*@
-
